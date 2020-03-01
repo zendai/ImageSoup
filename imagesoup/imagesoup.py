@@ -141,6 +141,24 @@ class ImageSoup():
         IMAGE_CLASS = ['rg_meta', 'notranslate']
         images_data = filter(lambda x: x['class'] == IMAGE_CLASS,
                              divs_has_class)
+
+        if len(images_data) == 0:
+
+            # It seems that the original parser doesn't work anymore, we have to dig into JS callback code to get the URLs
+            # This hasn't been tested thoroughly, it's a quick and dirty attempt to make this package work again            
+
+            try:
+
+                scripts=soup.findAll('script')
+
+                js=[script for script in scripts if "AF_initDataCallback({key: 'ds:2'" in script.text][0]
+                struct=json.loads(re.sub(r'(.*return)(.*)....$', r'\2', js.text.replace('\n', '').replace('\r', '')))
+                images_data=[a[1][3][0] for a in struct[31][0][12][2] if a[1] is not None]
+
+            except:
+
+                pass
+
         return list(images_data)
 
     def get_images_results(self, images_data):
