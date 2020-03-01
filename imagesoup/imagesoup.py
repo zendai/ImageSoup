@@ -1,3 +1,4 @@
+import re
 import io
 import json
 import math
@@ -149,11 +150,17 @@ class ImageSoup():
 
             try:
 
+                class TempImg:
+
+                    def __init__(self, URL):
+                        
+                        self.text = json.dumps({'ou': URL})
+
                 scripts=soup.findAll('script')
 
                 js=[script for script in scripts if "AF_initDataCallback({key: 'ds:2'" in script.text][0]
                 struct=json.loads(re.sub(r'(.*return)(.*)....$', r'\2', js.text.replace('\n', '').replace('\r', '')))
-                images_data=[a[1][3][0] for a in struct[31][0][12][2] if a[1] is not None]
+                images_data=[TempImg(a[1][3][0]) for a in struct[31][0][12][2] if a[1] is not None]
 
             except:
 
