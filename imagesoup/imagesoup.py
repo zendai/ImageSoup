@@ -143,7 +143,7 @@ class ImageSoup():
         images_data = filter(lambda x: x['class'] == IMAGE_CLASS,
                              divs_has_class)
 
-        if len(images_data) == 0:
+        if len(list(images_data)) == 0:
 
             # It seems that the original parser doesn't work anymore, we have to dig into JS callback code to get the URLs
             # This hasn't been tested thoroughly, it's a quick and dirty attempt to make this package work again            
